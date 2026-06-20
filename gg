@@ -1,0 +1,1512 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="대학생을 위한 고품격 학습 계획 및 실행 관리 투두리스트. 계획에서 완료까지 단계별 성장을 경험해보세요.">
+  <title>CAMPUS GROW - 대학생 학습 계획 관리 투두리스트</title>
+  
+  <!-- Google Fonts for Modern Typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+
+  <style>
+    /* ==========================================
+       1. DESIGN SYSTEM & ROOT VARIABLES
+       ========================================== */
+    :root {
+      --bg-gradient: radial-gradient(circle at 50% 0%, #0d1527 0%, #070a13 100%);
+      --panel-bg: rgba(19, 26, 42, 0.75);
+      --card-bg: rgba(30, 41, 59, 0.45);
+      --card-hover-bg: rgba(30, 41, 59, 0.65);
+      --border-color: rgba(255, 255, 255, 0.08);
+      --border-focus: rgba(59, 130, 246, 0.6);
+      
+      --color-primary: #3b82f6; /* Classic Blue */
+      --color-primary-glow: rgba(59, 130, 246, 0.35);
+      --color-accent: #60a5fa; /* Light Blue */
+      --color-success: #10b981; /* Emerald green */
+      --color-success-glow: rgba(16, 185, 129, 0.25);
+      --color-warning: #f59e0b; /* Amber */
+      --color-danger: #ef4444; /* Rose Red */
+      --color-danger-glow: rgba(239, 68, 68, 0.2);
+      
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --text-dark: #64748b;
+      
+      --font-display: 'Plus Jakarta Sans', 'Outfit', 'Noto Sans KR', sans-serif;
+      --font-body: 'Inter', 'Noto Sans KR', sans-serif;
+      
+      --glow-box: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+      --glow-blue: 0 0 20px rgba(59, 130, 246, 0.15);
+      --glow-success: 0 0 20px rgba(16, 185, 129, 0.15);
+      
+      --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      --transition-bounce: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    /* ==========================================
+       2. RESET & BASE STYLES
+       ========================================== */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+    }
+
+    body {
+      background: var(--bg-gradient);
+      color: var(--text-main);
+      font-family: var(--font-body);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      padding: 40px 20px;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    input, button {
+      font-family: inherit;
+      color: inherit;
+      outline: none;
+    }
+
+    /* Scrollbar Style */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: rgba(0, 0, 0, 0.1);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    /* ==========================================
+       3. LAYOUT CONTAINER
+       ========================================== */
+    .app-container {
+      width: 100%;
+      max-width: 680px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      animation: fadeIn 0.6s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(15px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ==========================================
+       4. GLASSMORPHIC HEADER / SCOREBOARD
+       ========================================== */
+    .header-panel {
+      background: var(--panel-bg);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--border-color);
+      border-radius: 24px;
+      padding: 24px;
+      box-shadow: var(--glow-box), var(--glow-blue);
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Top Brand Indicator */
+    .brand-section {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo-icon {
+      background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+      width: 38px;
+      height: 38px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+    }
+
+    .logo-icon svg {
+      width: 22px;
+      height: 22px;
+      fill: white;
+    }
+
+    .brand-title {
+      font-family: var(--font-display);
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      background: linear-gradient(to right, #ffffff, #93c5fd);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .badge-rank {
+      font-family: var(--font-display);
+      font-size: 11px;
+      font-weight: 700;
+      background: rgba(59, 130, 246, 0.15);
+      border: 1.5px solid rgba(59, 130, 246, 0.35);
+      color: #93c5fd;
+      padding: 4px 10px;
+      border-radius: 20px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      box-shadow: 0 0 10px rgba(59, 130, 246, 0.1);
+      transition: var(--transition-smooth);
+    }
+
+    .badge-rank.rank-gold {
+      background: rgba(245, 158, 11, 0.15);
+      border-color: rgba(245, 158, 11, 0.5);
+      color: #fbbf24;
+      box-shadow: 0 0 10px rgba(245, 158, 11, 0.1);
+    }
+
+    .badge-rank.rank-silver {
+      background: rgba(203, 213, 225, 0.15);
+      border-color: rgba(203, 213, 225, 0.5);
+      color: #e2e8f0;
+      box-shadow: 0 0 10px rgba(203, 213, 225, 0.1);
+    }
+
+    /* Score and Stats Grid */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .stat-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 16px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      transition: var(--transition-smooth);
+    }
+
+    .stat-card:hover {
+      border-color: rgba(255, 255, 255, 0.12);
+      transform: translateY(-2px);
+    }
+
+    .stat-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .stat-icon.score {
+      background: rgba(59, 130, 246, 0.1);
+      color: var(--color-primary);
+    }
+
+    .stat-icon.complete {
+      background: rgba(16, 185, 129, 0.1);
+      color: var(--color-success);
+    }
+
+    .stat-icon svg {
+      width: 24px;
+      height: 24px;
+    }
+
+    .stat-info {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .stat-label {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .stat-val {
+      font-family: var(--font-display);
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--text-main);
+      display: flex;
+      align-items: baseline;
+      gap: 2px;
+    }
+
+    .stat-val-unit {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    /* Progress Bar to next Rank */
+    .progress-section {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .progress-meta {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .progress-bar-container {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 10px;
+      height: 8px;
+      width: 100%;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .progress-bar-fill {
+      background: linear-gradient(to right, var(--color-primary), var(--color-accent));
+      height: 100%;
+      width: 0%;
+      border-radius: 10px;
+      transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
+    }
+
+    /* ==========================================
+       5. TASK INPUT FORM
+       ========================================== */
+    .input-panel {
+      background: var(--panel-bg);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      padding: 16px;
+      box-shadow: var(--glow-box);
+    }
+
+    .input-form {
+      display: flex;
+      gap: 12px;
+    }
+
+    .input-wrapper {
+      position: relative;
+      flex: 1;
+    }
+
+    .input-field {
+      width: 100%;
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px solid var(--border-color);
+      padding: 14px 16px 14px 44px;
+      border-radius: 14px;
+      font-size: 14px;
+      color: var(--text-main);
+      transition: var(--transition-smooth);
+    }
+
+    .input-field:focus {
+      border-color: var(--color-primary);
+      box-shadow: 0 0 14px rgba(59, 130, 246, 0.15);
+      background: rgba(0, 0, 0, 0.3);
+    }
+
+    .input-field::placeholder {
+      color: var(--text-dark);
+    }
+
+    .input-icon-left {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-dark);
+      pointer-events: none;
+      transition: var(--transition-smooth);
+    }
+
+    .input-field:focus ~ .input-icon-left {
+      color: var(--color-primary);
+    }
+
+    .btn-submit {
+      background: linear-gradient(135deg, var(--color-primary), #2563eb);
+      color: white;
+      border: none;
+      padding: 0 20px;
+      border-radius: 14px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: var(--transition-bounce);
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25);
+    }
+
+    .btn-submit:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(59, 130, 246, 0.4);
+      filter: brightness(1.15);
+    }
+
+    .btn-submit:active {
+      transform: translateY(1px);
+    }
+
+    /* ==========================================
+       6. FILTER TABS
+       ========================================== */
+    .filter-section {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .filter-tabs {
+      display: flex;
+      background: rgba(0, 0, 0, 0.25);
+      padding: 4px;
+      border-radius: 12px;
+      border: 1px solid var(--border-color);
+    }
+
+    .filter-tab {
+      background: transparent;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-muted);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: var(--transition-smooth);
+    }
+
+    .filter-tab.active {
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--text-main);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .tab-badge {
+      background: rgba(255, 255, 255, 0.1);
+      color: var(--text-muted);
+      padding: 1px 6px;
+      border-radius: 8px;
+      font-size: 11px;
+    }
+
+    .filter-tab.active .tab-badge {
+      background: var(--color-primary);
+      color: white;
+    }
+
+    /* Reset button */
+    .btn-clear-completed {
+      background: transparent;
+      border: none;
+      font-size: 12px;
+      color: var(--text-dark);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      transition: var(--transition-smooth);
+    }
+
+    .btn-clear-completed:hover {
+      color: var(--color-danger);
+    }
+
+    /* ==========================================
+       7. TASK CARD LISTINGS
+       ========================================== */
+    .task-list {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      min-height: 150px;
+    }
+
+    .task-card {
+      background: var(--panel-bg);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      position: relative;
+      box-shadow: var(--glow-box);
+      transition: var(--transition-bounce);
+      animation: slideIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .task-card.removing {
+      opacity: 0;
+      transform: scale(0.9) translateY(-10px);
+      transition: var(--transition-smooth);
+    }
+
+    .task-card:hover {
+      border-color: rgba(59, 130, 246, 0.25);
+      box-shadow: var(--glow-box), 0 0 18px rgba(59, 130, 246, 0.05);
+    }
+
+    /* Top row inside card */
+    .task-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+    }
+
+    .task-title-container {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex: 1;
+    }
+
+    .task-bullet {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--color-primary);
+      flex-shrink: 0;
+      box-shadow: 0 0 8px var(--color-primary);
+    }
+
+    .task-card.state-complete .task-bullet {
+      background: var(--color-success);
+      box-shadow: 0 0 8px var(--color-success);
+    }
+
+    .task-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text-main);
+      line-height: 1.4;
+      word-break: break-all;
+      transition: var(--transition-smooth);
+    }
+
+    .task-card.state-complete .task-title {
+      color: var(--text-muted);
+      text-decoration: line-through;
+      text-decoration-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .btn-delete {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border-color);
+      width: 32px;
+      height: 32px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: var(--text-dark);
+      transition: var(--transition-smooth);
+    }
+
+    .btn-delete:hover {
+      background: var(--color-danger-glow);
+      border-color: rgba(239, 68, 68, 0.3);
+      color: var(--color-danger);
+      transform: scale(1.05);
+    }
+
+    /* 3-Step checklist container */
+    .checklist-flow {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      background: rgba(0, 0, 0, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.03);
+      border-radius: 14px;
+      padding: 4px;
+      position: relative;
+    }
+
+    /* Checklist Step pill */
+    .step-pill {
+      background: transparent;
+      border: none;
+      padding: 10px 8px;
+      border-radius: 10px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-dark);
+      cursor: not-allowed;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: var(--transition-smooth);
+      position: relative;
+    }
+
+    /* Step states */
+    /* 1. Locked state (default) */
+    .step-pill.locked svg.lock-icon {
+      display: block;
+    }
+    .step-pill.locked svg.check-icon {
+      display: none;
+    }
+
+    /* 2. Unlocked (Active but unchecked) */
+    .step-pill.unlocked {
+      color: var(--text-muted);
+      cursor: pointer;
+    }
+    .step-pill.unlocked:hover {
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--text-main);
+    }
+    .step-pill.unlocked svg.lock-icon {
+      display: none;
+    }
+    .step-pill.unlocked svg.check-icon {
+      display: block;
+      opacity: 0.3;
+    }
+
+    /* 3. Checked State */
+    .step-pill.checked {
+      cursor: pointer;
+    }
+    .step-pill.checked svg.lock-icon {
+      display: none;
+    }
+    .step-pill.checked svg.check-icon {
+      display: block;
+      opacity: 1;
+    }
+
+    /* Individual step styles when checked */
+    .step-pill[data-step="plan"].checked {
+      background: rgba(59, 130, 246, 0.12);
+      color: var(--color-accent);
+      border: 1px solid rgba(59, 130, 246, 0.25);
+    }
+    
+    .step-pill[data-step="execute"].checked {
+      background: rgba(245, 158, 11, 0.1);
+      color: var(--color-warning);
+      border: 1px solid rgba(245, 158, 11, 0.25);
+    }
+    
+    .step-pill[data-step="complete"].checked {
+      background: rgba(16, 185, 129, 0.12);
+      color: var(--color-success);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      box-shadow: var(--glow-success);
+    }
+
+    .step-pill svg {
+      width: 14px;
+      height: 14px;
+      flex-shrink: 0;
+    }
+
+    /* Arrow connectives in CSS */
+    .checklist-flow .step-connector {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      color: rgba(255, 255, 255, 0.1);
+      pointer-events: none;
+      font-size: 10px;
+    }
+
+    .checklist-flow .step-connector.c1 {
+      left: 33.33%;
+      transform: translate(-50%, -50%);
+    }
+
+    .checklist-flow .step-connector.c2 {
+      left: 66.66%;
+      transform: translate(-50%, -50%);
+    }
+
+    /* Empty state */
+    .empty-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 48px 24px;
+      background: var(--panel-bg);
+      border: 1px dashed rgba(255, 255, 255, 0.08);
+      border-radius: 20px;
+      gap: 16px;
+      animation: fadeIn 0.4s ease-out;
+    }
+
+    .empty-icon {
+      background: rgba(59, 130, 246, 0.05);
+      color: var(--text-dark);
+      width: 64px;
+      height: 64px;
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid rgba(255, 255, 255, 0.03);
+    }
+
+    .empty-icon svg {
+      width: 32px;
+      height: 32px;
+    }
+
+    .empty-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .empty-desc {
+      font-size: 13px;
+      color: var(--text-muted);
+      max-width: 280px;
+      line-height: 1.5;
+    }
+
+    /* ==========================================
+       8. FLOATING FEEDBACK & PARTICLES
+       ========================================== */
+    .particle {
+      position: absolute;
+      pointer-events: none;
+      border-radius: 50%;
+      z-index: 100;
+      animation: particleBlow 0.8s cubic-bezier(0.1, 0.8, 0.3, 1) forwards;
+    }
+
+    @keyframes particleBlow {
+      0% {
+        transform: translate(0, 0) scale(1);
+        opacity: 1;
+      }
+      100% {
+        transform: translate(var(--tx), var(--ty)) scale(0);
+        opacity: 0;
+      }
+    }
+
+    /* Toast system */
+    .toast-container {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      z-index: 1000;
+      pointer-events: none;
+    }
+
+    .toast {
+      background: rgba(15, 23, 42, 0.95);
+      border: 1px solid rgba(59, 130, 246, 0.3);
+      padding: 12px 20px;
+      border-radius: 12px;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5), var(--glow-blue);
+      color: var(--text-main);
+      font-size: 13px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      pointer-events: auto;
+      animation: toastIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards,
+                 toastOut 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) 2.5s forwards;
+    }
+
+    @keyframes toastIn {
+      from { transform: translateY(20px) scale(0.9); opacity: 0; }
+      to { transform: translateY(0) scale(1); opacity: 1; }
+    }
+
+    @keyframes toastOut {
+      from { transform: translateY(0) scale(1); opacity: 1; }
+      to { transform: translateY(15px) scale(0.9); opacity: 0; }
+    }
+
+    /* ==========================================
+       9. RESPONSIVE DESIGN (MEDIA QUERIES)
+       ========================================== */
+    @media (max-width: 520px) {
+      body {
+        padding: 20px 12px;
+      }
+      
+      .header-panel {
+        padding: 16px;
+        border-radius: 20px;
+      }
+
+      .stats-grid {
+        gap: 12px;
+        margin-bottom: 16px;
+      }
+
+      .stat-card {
+        padding: 12px;
+        gap: 10px;
+      }
+
+      .stat-icon {
+        width: 36px;
+        height: 36px;
+      }
+
+      .stat-icon svg {
+        width: 20px;
+        height: 20px;
+      }
+
+      .stat-val {
+        font-size: 20px;
+      }
+
+      .input-panel {
+        padding: 12px;
+      }
+
+      .input-form {
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .btn-submit {
+        justify-content: center;
+        padding: 12px;
+      }
+
+      .filter-section {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+      }
+
+      .filter-tabs {
+        width: 100%;
+      }
+
+      .filter-tab {
+        flex: 1;
+        justify-content: center;
+      }
+
+      .btn-clear-completed {
+        justify-content: flex-end;
+      }
+
+      .task-card {
+        padding: 16px;
+      }
+
+      .step-pill {
+        font-size: 11px;
+        padding: 8px 4px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app-container">
+    
+    <!-- 1. HEADER / SCOREBOARD PANEL -->
+    <header class="header-panel">
+      <div class="brand-section">
+        <div class="logo-container">
+          <div class="logo-icon">
+            <!-- Graduation Cap SVG -->
+            <svg viewBox="0 0 24 24">
+              <path d="M12 3L1 9l11 6 9-4.91V17h2V9L12 3zM5.89 12.55L12 15.89l6.11-3.34c-.65 1.76-2.3 3.05-4.29 3.39-1.2.2-2.44.2-3.64 0-1.99-.34-3.64-1.63-4.29-3.39z"/>
+            </svg>
+          </div>
+          <h1 class="brand-title">CAMPUS GROW</h1>
+        </div>
+        <div class="badge-rank" id="badge-rank">BRONZE LEARNER</div>
+      </div>
+
+      <!-- Stats Grid -->
+      <div class="stats-grid">
+        <!-- Score Card -->
+        <div class="stat-card">
+          <div class="stat-icon score">
+            <!-- Trophy SVG -->
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path>
+              <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path>
+              <path d="M4 22h16"></path>
+              <path d="M10 14.66V17c0 .55-.45 1-1 1H4v2h16v-2h-5c-.55 0-1-.45-1-1v-2.34"></path>
+              <path d="M12 2a7 7 0 0 0-7 7c0 2.58 1.42 4.83 3.5 6h7c2.08-1.17 3.5-3.42 3.5-7a7 7 0 0 0-7-7z"></path>
+            </svg>
+          </div>
+          <div class="stat-info">
+            <span class="stat-label">누적 학습 점수</span>
+            <span class="stat-val" id="score-val">0 <span class="stat-val-unit">XP</span></span>
+          </div>
+        </div>
+
+        <!-- Completed Tasks Card -->
+        <div class="stat-card">
+          <div class="stat-icon complete">
+            <!-- Check Circle SVG -->
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+              <polyline points="22 4 12 14.01 9 11.01"></polyline>
+            </svg>
+          </div>
+          <div class="stat-info">
+            <span class="stat-label">완료한 학습 목표</span>
+            <span class="stat-val" id="completed-val">0 <span class="stat-val-unit">개</span></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Rank Progress Bar -->
+      <div class="progress-section">
+        <div class="progress-meta">
+          <span id="rank-progress-label">다음 등급까지</span>
+          <span id="rank-progress-percent">0%</span>
+        </div>
+        <div class="progress-bar-container">
+          <div class="progress-bar-fill" id="progress-bar-fill"></div>
+        </div>
+      </div>
+    </header>
+
+    <!-- 2. TASK INPUT PANEL -->
+    <section class="input-panel">
+      <form class="input-form" id="input-form">
+        <div class="input-wrapper">
+          <input 
+            type="text" 
+            class="input-field" 
+            id="task-input" 
+            placeholder="오늘 달성할 구체적인 학습 목표를 입력하세요..." 
+            maxlength="100"
+            required
+            autocomplete="off"
+          >
+          <div class="input-icon-left">
+            <!-- Edit Icon SVG -->
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 20h9"></path>
+              <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
+            </svg>
+          </div>
+        </div>
+        <button type="submit" class="btn-submit" id="btn-add">
+          <!-- Plus Icon SVG -->
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="12" y1="5" x2="12" y2="19"></line>
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+          </svg>
+          추가하기
+        </button>
+      </form>
+    </section>
+
+    <!-- 3. FILTER TABS & CLEAR OPTION -->
+    <section class="filter-section">
+      <div class="filter-tabs">
+        <button class="filter-tab active" data-filter="all" id="tab-all">
+          전체 <span class="tab-badge" id="badge-all">0</span>
+        </button>
+        <button class="filter-tab" data-filter="active" id="tab-active">
+          진행 중 <span class="tab-badge" id="badge-active">0</span>
+        </button>
+        <button class="filter-tab" data-filter="completed" id="tab-completed">
+          완료됨 <span class="tab-badge" id="badge-completed">0</span>
+        </button>
+      </div>
+      <button class="btn-clear-completed" id="btn-clear-completed" style="display: none;">
+        <!-- Clean SVG -->
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="3 6 5 6 21 6"></polyline>
+          <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+        </svg>
+        완료 목록 정리
+      </button>
+    </section>
+
+    <!-- 4. TASKS DISPLAY CONTAINER -->
+    <main class="task-list" id="task-list-container"></main>
+
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <!-- ==========================================
+     10. JAVASCRIPT APP LOGIC
+     ========================================== -->
+  <script>
+    // State storage keys
+    const STORAGE_KEY_TASKS = 'campugrow_tasks_v1';
+    const STORAGE_KEY_SCORE = 'campugrow_score_v1';
+
+    // Application state
+    let state = {
+      tasks: [],
+      score: 0,
+      filter: 'all'
+    };
+
+    // DOM Elements
+    const elements = {
+      taskInput: document.getElementById('task-input'),
+      inputForm: document.getElementById('input-form'),
+      taskListContainer: document.getElementById('task-list-container'),
+      scoreVal: document.getElementById('score-val'),
+      completedVal: document.getElementById('completed-val'),
+      badgeRank: document.getElementById('badge-rank'),
+      rankProgressLabel: document.getElementById('rank-progress-label'),
+      rankProgressPercent: document.getElementById('rank-progress-percent'),
+      progressBarFill: document.getElementById('progress-bar-fill'),
+      tabAll: document.getElementById('tab-all'),
+      tabActive: document.getElementById('tab-active'),
+      tabCompleted: document.getElementById('tab-completed'),
+      badgeAll: document.getElementById('badge-all'),
+      badgeActive: document.getElementById('badge-active'),
+      badgeCompleted: document.getElementById('badge-completed'),
+      btnClearCompleted: document.getElementById('btn-clear-completed'),
+      toastContainer: document.getElementById('toast-container')
+    };
+
+    // SVGs Definition for dynamic template insertion
+    const SVGS = {
+      lock: `<svg class="lock-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>`,
+      check: `<svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`,
+      delete: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>`,
+      empty: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>`
+    };
+
+    // Rank Configurations (Gamification thresholds)
+    const RANKS = [
+      { name: 'BRONZE LEARNER', minScore: 0, maxScore: 10, colorClass: 'rank-bronze' },
+      { name: 'SILVER ACHIEVER', minScore: 10, maxScore: 30, colorClass: 'rank-silver' },
+      { name: 'GOLD MASTER', minScore: 30, maxScore: Infinity, colorClass: 'rank-gold' }
+    ];
+
+    /* ==========================================
+       INITIALIZATION
+       ========================================== */
+    function init() {
+      // 1. Load data from LocalStorage
+      try {
+        const localTasks = localStorage.getItem(STORAGE_KEY_TASKS);
+        const localScore = localStorage.getItem(STORAGE_KEY_SCORE);
+        
+        state.tasks = localTasks ? JSON.parse(localTasks) : [];
+        state.score = localScore ? parseInt(localScore, 10) : 0;
+      } catch (e) {
+        console.error("로컬 스토리지를 로드하는 중 에러가 발생했습니다:", e);
+        state.tasks = [];
+        state.score = 0;
+      }
+
+      // 2. Add event listeners
+      elements.inputForm.addEventListener('submit', handleAddTask);
+      elements.tabAll.addEventListener('click', () => setFilter('all'));
+      elements.tabActive.addEventListener('click', () => setFilter('active'));
+      elements.tabCompleted.addEventListener('click', () => setFilter('completed'));
+      elements.btnClearCompleted.addEventListener('click', handleClearCompleted);
+
+      // 3. Render initial screen
+      updateUI();
+    }
+
+    /* ==========================================
+       CORE RENDER & STATE SYNC
+       ========================================= */
+    function saveState() {
+      try {
+        localStorage.setItem(STORAGE_KEY_TASKS, JSON.stringify(state.tasks));
+        localStorage.setItem(STORAGE_KEY_SCORE, state.score.toString());
+      } catch (e) {
+        console.error("상태 저장 실패:", e);
+      }
+    }
+
+    function updateUI() {
+      saveState();
+      renderStats();
+      renderTasks();
+      updateFilterTabs();
+    }
+
+    /* Renders Top Stats Panel & Ranks */
+    function renderStats() {
+      const completedCount = state.tasks.filter(t => t.complete).length;
+      
+      // Update values with smooth transitions
+      elements.scoreVal.childNodes[0].textContent = state.score + ' ';
+      elements.completedVal.childNodes[0].textContent = completedCount + ' ';
+
+      // Calculate Rank
+      let currentRank = RANKS[0];
+      for (let i = RANKS.length - 1; i >= 0; i--) {
+        if (state.score >= RANKS[i].minScore) {
+          currentRank = RANKS[i];
+          break;
+        }
+      }
+
+      // Set Rank name & class
+      elements.badgeRank.textContent = currentRank.name;
+      elements.badgeRank.className = `badge-rank ${currentRank.colorClass || ''}`;
+
+      // Progress bar logic
+      if (currentRank.maxScore === Infinity) {
+        elements.rankProgressLabel.textContent = '최고 등급 달성! 초월 등급을 유지하세요.';
+        elements.rankProgressPercent.textContent = '100%';
+        elements.progressBarFill.style.width = '100%';
+      } else {
+        const range = currentRank.maxScore - currentRank.minScore;
+        const progress = state.score - currentRank.minScore;
+        const percent = Math.min(Math.max(Math.round((progress / range) * 100), 0), 100);
+        
+        elements.rankProgressLabel.textContent = `다음 등급(${RANKS[RANKS.indexOf(currentRank) + 1].name})까지`;
+        elements.rankProgressPercent.textContent = `${percent}%`;
+        elements.progressBarFill.style.width = `${percent}%`;
+      }
+    }
+
+    /* Renders Task List based on current Filter */
+    function renderTasks() {
+      elements.taskListContainer.innerHTML = '';
+      
+      const filteredTasks = state.tasks.filter(task => {
+        if (state.filter === 'active') return !task.complete;
+        if (state.filter === 'completed') return task.complete;
+        return true;
+      });
+
+      if (filteredTasks.length === 0) {
+        renderEmptyState();
+        return;
+      }
+
+      filteredTasks.forEach(task => {
+        const taskCard = createTaskElement(task);
+        elements.taskListContainer.appendChild(taskCard);
+      });
+    }
+
+    /* Renders Clean Empty State Banner */
+    function renderEmptyState() {
+      let descText = '계획 중이거나 완료된 학습 과제가 없습니다. 새로운 목표를 등록해 보세요!';
+      if (state.filter === 'active') descText = '현재 진행 중인 목표가 없네요! 오늘 완수할 계획을 수립해 보세요.';
+      if (state.filter === 'completed') descText = '아직 완료된 학습 목표가 없어요. 차근차근 계획 단계부터 밟아보세요!';
+
+      const emptyDiv = document.createElement('div');
+      emptyDiv.className = 'empty-state';
+      emptyDiv.innerHTML = `
+        <div class="empty-icon">${SVGS.empty}</div>
+        <div class="empty-title">목표 목록이 비어있습니다</div>
+        <div class="empty-desc">${descText}</div>
+      `;
+      elements.taskListContainer.appendChild(emptyDiv);
+    }
+
+    /* Updates tab counts and styles */
+    function updateFilterTabs() {
+      const totalCount = state.tasks.length;
+      const activeCount = state.tasks.filter(t => !t.complete).length;
+      const completedCount = state.tasks.filter(t => t.complete).length;
+
+      elements.badgeAll.textContent = totalCount;
+      elements.badgeActive.textContent = activeCount;
+      elements.badgeCompleted.textContent = completedCount;
+
+      // Show/Hide Clear completed button
+      if (completedCount > 0) {
+        elements.btnClearCompleted.style.display = 'flex';
+      } else {
+        elements.btnClearCompleted.style.display = 'none';
+      }
+    }
+
+    /* ==========================================
+       COMPONENT BUILDER (TASK CARD CARD)
+       ========================================== */
+    function createTaskElement(task) {
+      const card = document.createElement('div');
+      card.className = `task-card ${task.complete ? 'state-complete' : ''}`;
+      card.id = `task-card-${task.id}`;
+
+      // Build overall HTML
+      card.innerHTML = `
+        <div class="task-header">
+          <div class="task-title-container">
+            <span class="task-bullet"></span>
+            <span class="task-title">${escapeHTML(task.title)}</span>
+          </div>
+          <button class="btn-delete" title="목표 삭제" aria-label="삭제">
+            ${SVGS.delete}
+          </button>
+        </div>
+        <div class="checklist-flow">
+          <button class="step-pill" data-step="plan">
+            ${SVGS.check}${SVGS.lock}
+            <span>계획</span>
+          </button>
+          <span class="step-connector c1">➔</span>
+          <button class="step-pill" data-step="execute">
+            ${SVGS.check}${SVGS.lock}
+            <span>실행</span>
+          </button>
+          <span class="step-connector c2">➔</span>
+          <button class="step-pill" data-step="complete">
+            ${SVGS.check}${SVGS.lock}
+            <span>완료</span>
+          </button>
+        </div>
+      `;
+
+      // Apply states to steps
+      updateCardSteps(card, task);
+
+      // Event: Delete Click
+      card.querySelector('.btn-delete').addEventListener('click', (e) => {
+        e.stopPropagation();
+        handleDeleteTask(task.id);
+      });
+
+      // Events: Step Buttons Click
+      const stepButtons = card.querySelectorAll('.step-pill');
+      stepButtons.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const step = btn.getAttribute('data-step');
+          handleToggleStep(task.id, step, btn);
+        });
+      });
+
+      return card;
+    }
+
+    /* Enforce visual classes based on task state */
+    function updateCardSteps(cardElement, task) {
+      const btnPlan = cardElement.querySelector('.step-pill[data-step="plan"]');
+      const btnExecute = cardElement.querySelector('.step-pill[data-step="execute"]');
+      const btnComplete = cardElement.querySelector('.step-pill[data-step="complete"]');
+
+      // Helper to reset and apply classes
+      function setStepState(btn, stateClass) {
+        btn.className = `step-pill ${stateClass}`;
+      }
+
+      // Step 1: Plan
+      // Plan is always unlocked, but can be checked/unchecked
+      setStepState(btnPlan, task.plan ? 'checked' : 'unlocked');
+
+      // Step 2: Execute
+      if (task.plan) {
+        setStepState(btnExecute, task.execute ? 'checked' : 'unlocked');
+      } else {
+        setStepState(btnExecute, 'locked');
+      }
+
+      // Step 3: Complete
+      if (task.plan && task.execute) {
+        setStepState(btnComplete, task.complete ? 'checked' : 'unlocked');
+      } else {
+        setStepState(btnComplete, 'locked');
+      }
+    }
+
+    /* ==========================================
+       ACTION HANDLERS & STATE MUTATORS
+       ========================================= */
+    
+    /* Add Task */
+    function handleAddTask(e) {
+      e.preventDefault();
+      
+      const titleText = elements.taskInput.value.trim();
+      if (!titleText) return;
+
+      const newTask = {
+        id: Date.now().toString(),
+        title: titleText,
+        plan: false,
+        execute: false,
+        complete: false,
+        createdAt: new Date().toISOString()
+      };
+
+      state.tasks.unshift(newTask);
+      elements.taskInput.value = '';
+      
+      updateUI();
+      showToast('새로운 학습 계획이 등록되었습니다! 📝');
+    }
+
+    /* Delete Task */
+    function handleDeleteTask(taskId) {
+      const index = state.tasks.findIndex(t => t.id === taskId);
+      if (index === -1) return;
+
+      const task = state.tasks[index];
+      const card = document.getElementById(`task-card-${taskId}`);
+
+      // If task was completed, we do NOT decrease score, because it was already earned.
+      // But we just notify the user.
+      
+      if (card) {
+        card.classList.add('removing');
+        card.addEventListener('transitionend', () => {
+          state.tasks.splice(index, 1);
+          updateUI();
+          showToast('목표를 삭제하였습니다.');
+        }, { once: true });
+      } else {
+        state.tasks.splice(index, 1);
+        updateUI();
+      }
+    }
+
+    /* Sequential Checklist Toggling */
+    function handleToggleStep(taskId, step, clickedBtn) {
+      const task = state.tasks.find(t => t.id === taskId);
+      if (!task) return;
+
+      let scoreDiff = 0;
+      let toastMsg = '';
+
+      if (step === 'plan') {
+        if (!task.plan) {
+          // Check Plan
+          task.plan = true;
+          toastMsg = '계획을 확인했습니다! 목표를 실행해보세요. 🚀';
+        } else {
+          // Uncheck Plan. Enforces resetting subsequent steps!
+          task.plan = false;
+          
+          // If unchecking plan, execute and complete must also be unchecked.
+          if (task.complete) {
+            scoreDiff = -1; // Decrement score if it was completed
+          }
+          task.execute = false;
+          task.complete = false;
+          toastMsg = '계획 상태로 초기화되었습니다.';
+        }
+      } 
+      
+      else if (step === 'execute') {
+        // Enforce ordering: Can only toggle if plan is checked
+        if (!task.plan) {
+          showToast('먼저 계획(Plan)을 완료해 주세요! 🔒');
+          return;
+        }
+
+        if (!task.execute) {
+          // Check Execute
+          task.execute = true;
+          toastMsg = '실행 중입니다! 끝까지 힘내세요! 💪';
+        } else {
+          // Uncheck Execute. Enforces resetting complete!
+          task.execute = false;
+          if (task.complete) {
+            scoreDiff = -1; // Decrement score if it was completed
+          }
+          task.complete = false;
+          toastMsg = '실행이 일시 중지되었습니다.';
+        }
+      } 
+      
+      else if (step === 'complete') {
+        // Enforce ordering: Can only toggle if execute is checked
+        if (!task.plan || !task.execute) {
+          showToast('계획 및 실행이 먼저 달성되어야 합니다! 🔒');
+          return;
+        }
+
+        if (!task.complete) {
+          // Check Complete
+          task.complete = true;
+          scoreDiff = 1;
+          toastMsg = '축하합니다! 학습 과제 완료! +1 XP 🌟';
+          
+          // Trigger Confetti explosion
+          triggerConfetti(clickedBtn);
+        } else {
+          // Uncheck Complete
+          task.complete = false;
+          scoreDiff = -1;
+          toastMsg = '완료가 취소되었습니다. (점수 회수)';
+        }
+      }
+
+      // Apply score change
+      state.score = Math.max(state.score + scoreDiff, 0); // Keep score non-negative
+      
+      // Sync State & Re-render
+      updateUI();
+
+      if (toastMsg) {
+        showToast(toastMsg);
+      }
+    }
+
+    /* Filter Tasks Tabs switching */
+    function setFilter(filterType) {
+      state.filter = filterType;
+      
+      // Update UI active states
+      document.querySelectorAll('.filter-tab').forEach(tab => {
+        tab.classList.remove('active');
+      });
+
+      if (filterType === 'all') elements.tabAll.classList.add('active');
+      if (filterType === 'active') elements.tabActive.classList.add('active');
+      if (filterType === 'completed') elements.tabCompleted.classList.add('active');
+
+      renderTasks();
+    }
+
+    /* Remove all completed tasks */
+    function handleClearCompleted() {
+      // Find completed task IDs
+      const completedTasks = state.tasks.filter(t => t.complete);
+      if (completedTasks.length === 0) return;
+
+      if (confirm(`완료된 ${completedTasks.length}개의 목표를 삭제하시겠습니까?`)) {
+        state.tasks = state.tasks.filter(t => !t.complete);
+        updateUI();
+        showToast('완료된 목표 목록을 정리했습니다.');
+      }
+    }
+
+    /* ==========================================
+       UTILITIES & MICRO-EFFECTS (CONFETTI, TOAST)
+       ========================================= */
+    
+    /* Escaping user inputs */
+    function escapeHTML(str) {
+      return str.replace(/[&<>'"]/g, 
+        tag => ({
+          '&': '&amp;',
+          '<': '&lt;',
+          '>': '&gt;',
+          "'": '&#39;',
+          '"': '&quot;'
+        }[tag] || tag)
+      );
+    }
+
+    /* Custom Toast popup */
+    function showToast(message) {
+      const toast = document.createElement('div');
+      toast.className = 'toast';
+      toast.textContent = message;
+      
+      elements.toastContainer.appendChild(toast);
+      
+      // Remove element after animation completes (2.8s total)
+      setTimeout(() => {
+        toast.remove();
+      }, 2800);
+    }
+
+    /* Lightweight Canvas-less Particle Confetti on target element */
+    function triggerConfetti(targetElement) {
+      const rect = targetElement.getBoundingClientRect();
+      const centerX = rect.left + rect.width / 2;
+      const centerY = rect.top + rect.height / 2;
+      
+      const particleCount = 25;
+      const colors = ['#3b82f6', '#60a5fa', '#10b981', '#fbbf24', '#ff007f', '#a855f7'];
+
+      for (let i = 0; i < particleCount; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'particle';
+        
+        // Random particle styling
+        const size = Math.random() * 8 + 4;
+        const color = colors[Math.floor(Math.random() * colors.length)];
+        
+        particle.style.width = `${size}px`;
+        particle.style.height = `${size}px`;
+        particle.style.backgroundColor = color;
+        particle.style.left = `${centerX}px`;
+        particle.style.top = `${centerY}px`;
+
+        // Calculate random destination direction
+        const angle = Math.random() * Math.PI * 2;
+        const velocity = Math.random() * 90 + 40;
+        const tx = Math.cos(angle) * velocity;
+        const ty = Math.sin(angle) * velocity - (Math.random() * 40 + 20); // slightly pull upward
+
+        particle.style.setProperty('--tx', `${tx}px`);
+        particle.style.setProperty('--ty', `${ty}px`);
+
+        document.body.appendChild(particle);
+
+        // Remove particle element after animation runs
+        setTimeout(() => {
+          particle.remove();
+        }, 800);
+      }
+    }
+
+    // Fire application on window load
+    window.addEventListener('DOMContentLoaded', init);
+
+  </script>
+</body>
+</html>
